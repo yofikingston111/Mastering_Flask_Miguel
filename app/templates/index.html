@@ -1,55 +1,8 @@
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--    <head>-->
-
-<!--    <title>{{ title }} - Microblog</title>-->
-<!--    </head>-->
-<!--    <body>-->
-<!--        <h1>Hello, {{ user.username }} World!</h1>-->
-
-<!--    </body>-->
-<!--</html>-->
-
-    <!--statement if else-->
-<!--<!doctype html>-->
-<!--<html>-->
-<!--    <head>-->
-<!--        {% if title %}-->
-<!--        <title>{{ title }} - Microblog</title>-->
-<!--        {% else %}-->
-<!--        <title>Welcome to Microblog!</title>-->
-<!--        {% endif %}-->
-<!--    </head>-->
-<!--    <body>-->
-<!--        <h1>Hello, {{ user.username }}!</h1>-->
-<!--    </body>-->
-<!--</html>-->
-
-
-<!--Loops-->
-<!--<!doctype html>-->
-<!--<html>-->
-<!--    <head>-->
-<!--        {% if title %}-->
-<!--        <title>{{ title }} -Microblog</title>-->
-<!--        {% else %}-->
-<!--        <title>Welcome to Microblog</title>-->
-<!--        {% endif %}-->
-<!--    </head>-->
-<!--    <body>-->
-<!--        <h1>Hi, {{ user.username }}!</h1>-->
-<!--        {% for post in posts %}-->
-<!--        <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>-->
-<!--        {% endfor %}-->
-<!--    </body>-->
-<!--</html>-->
-
-<!--Inherit from  base template-->
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hi, {{ user.username }}!</h1>
+    <h1>Hi, {{ current_user.username }}!</h1>
     {% for post in posts %}
-    <div><p>{{ post.author.username }} says: <b>{{post.body}}</b></p></div>
+    <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
     {% endfor %}
 {% endblock %}
