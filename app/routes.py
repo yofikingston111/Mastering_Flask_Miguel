@@ -10,6 +10,10 @@ from werkzeug.urls import url_parse
 from app import db
 from app.forms import RegistrationForm
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -22,10 +26,8 @@ def login():
             flash('Invalid username or password')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        next_page = request.args.get('next')
-        if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
-        return redirect('next_page')
+        return redirect(url_for('index'))
+    return render_template('login.html', title='Sign In', form=form)
 
 @app.route('/register', methods =['GET', 'POST'])
 def register():

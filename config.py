@@ -6,5 +6,6 @@ class Config(object):
     # SQLAlchemy
     SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:12345@localhost/UserDB'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-
+    SECRET_KEY = "powerful secretkey",
+    WTF_CSRF_SECRET_KEY = "a csrf secret key"
 
