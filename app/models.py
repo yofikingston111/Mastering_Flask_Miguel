@@ -21,10 +21,10 @@ class User(UserMixin, db.Model):
      db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
      )
     followed = db.relationship(
-        'User', secondary=followers,
-        primaryjoin=(followers.c.follower_id == id),
-        secondaryjoin=(followers.c.followed_id == id),
-        backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+    'User', secondary=followers,
+    primaryjoin=(followers.c.follower_id == id),
+    secondaryjoin=(followers.c.followed_id == id),
+    backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
     def follow(self, user):
         if not self.is_following(user):
@@ -38,11 +38,11 @@ class User(UserMixin, db.Model):
         return self.followed.filter(
             followers.c.followed_id == user.id).count() > 0
 
-    def followed_posts(self):
-        return Post.query.join(
-            followers, (followers.c.followed_id == Post.user_id)).filter(
-                followers.c.follower_id == self.id).order_by(
-                    Post.timestamp.desc())
+    # def followed_posts(self):
+    #     return Post.query.join(
+    #         followers, (followers.c.followed_id == Post.user_id)).filter(
+    #             followers.c.follower_id == self.id).order_by(
+    #                 Post.timestamp.desc())
 
 
     def set_password(self, password):
