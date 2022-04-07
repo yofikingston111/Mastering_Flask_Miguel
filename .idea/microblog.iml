@@ -6,6 +6,7 @@
       <excludeFolder url="file://$MODULE_DIR$/venv1" />
       <excludeFolder url="file://$MODULE_DIR$/Test_Flask/microblog/venv" />
       <excludeFolder url="file://$MODULE_DIR$/microblog/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/Scraper_Lina_Job_Street/venv" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.10 (microblog-8Ek5hws5)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
