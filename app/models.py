@@ -19,25 +19,13 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
-    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-    token = db.Column(db.String(32), index=True, unique=True)
-    token_expiration = db.Column(db.DateTime)
 
     followed = db.relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
-    messages_sent = db.relationship('Message',
-                                    foreign_keys='Message.sender_id',
-                                    backref='author', lazy='dynamic')
-    messages_received = db.relationship('Message',
-                                        foreign_keys='Message.recipient_id',
-                                        backref='recipient', lazy='dynamic')
-    last_message_read_time = db.Column(db.DateTime)
-    notifications = db.relationship('Notification', backref='user',
-                                    lazy='dynamic')
-    tasks = db.relationship('Task', backref='user', lazy='dynamic')
+
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -54,23 +42,34 @@ class User(UserMixin, db.Model):
             digest, size
         )
 
-    def follow(self, user):
-        if not self.is_following(user):
-            self.followed.append(user)
+    def follow(self, User):
+        if not self.is_following(User):
+            self.followed.append(User)
 
-    def unfollow(self, user):
-        if self.is_following(user):
-            self.followed.remove(user)
+    def unfollow(self, User):
+        if self.is_following(User):
+            self.followed.remove(User)
 
-    def is_following(self, user):
+    def is_following(self, User):
         return self.followed.filter(
-            followers.c.followed_id == user.id).count() > 0
+            followers.c.followed_id == User.id).count() > 0
 
+    # def followed_posts(self):
+    #     return Post.query.join(
+    #         followers, (followers.c.followed_id == Post.user_id)).filter(
+    #             followers.c.follower_id == self.id).order_by(
+    #                 Post.timestamp.desc())
     def followed_posts(self):
-        return Post.query.join(
+        followed = Post.query.join(
             followers, (followers.c.followed_id == Post.user_id)).filter(
-            followers.c.follower_id == self.id).order_by(
-            Post.timestamp.desc())
+            followers.c.follower_id == self.id)
+        own = Post.query.filter_by(user_id=self.id)
+        return followed.union(own).order_by(Post.timestamp.desc())
+
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 
 class Post(db.Model):
@@ -81,8 +80,3 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
-
-
-@login.user_loader
-def load_user(id):
-    return User.query.get(int(id))

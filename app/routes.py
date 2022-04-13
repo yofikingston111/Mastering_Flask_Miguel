@@ -38,7 +38,9 @@ def edit_profile():
 @app.route('/user/<username>')
 @login_required
 def user(username):
+    user = request.args.get('user')
     user = User.query.filter_by(username=username).first_or_404()
+
     posts = Post.query.all()
 
     return render_template('user.html', user=user, posts=posts)
