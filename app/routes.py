@@ -11,6 +11,7 @@ from app import db
 from app.forms import RegistrationForm
 from datetime import datetime
 from app.forms import EditProfileForm
+from app.forms import EmptyForm
 
 
 @app.route('/')
@@ -35,15 +36,7 @@ def edit_profile():
 
 
 
-@app.route('/user/<username>')
-@login_required
-def user(username):
-    user = request.args.get('user')
-    user = User.query.filter_by(username=username).first_or_404()
 
-    posts = Post.query.all()
-
-    return render_template('user.html', user=user, posts=posts)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -82,6 +75,54 @@ def before_request():
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
 
+@app.route('/follow/<username>', methods=['POST'])
+@login_required
+def follow(username):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user =  User.query.filter_by(username=username).first()
+        if user is None:
+            flash('User{} not found.'.format(username))
+            return redirect(url_for('index'))
+        if user == current_user:
+            flash('You Cannot Follow Yourself')
+            return redirect(url_for('user', username=username))
+        current_user.follow(user)
+        db.session.commit()
+        flash('You are following {}!'.format(username))
+        return redirect(url_for('user', username=username))
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/unfollow/<username>', methods=['POST'])
+@login_required
+def unfollow(username):
+    form = EmptyForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+        if user is None:
+            flash('User {} not found.'.format(username))
+            return redirect(url_for('index'))
+        if user == current_user:
+            flash('You Cannot Unfollow Yourself!')
+            return  redirect(url_for('user', username=username))
+        current_user.unfollow(user)
+        db.session.commit()
+        flash('You Are Not Following {}.'.format(username))
+        return redirect(url_for('user', username=username))
+    else:
+        return redirect(url_for('index'))
+
+@app.route('/user/<username>')
+@login_required
+def user(username):
+
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = user.posts.order_by(Post.timestamp.desc())
+
+
+    form = EmptyForm()
+    return render_template('user.html', user=user, posts=posts, form=form)
 
 @app.route('/logout')
 def logout():
