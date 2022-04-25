@@ -1,6 +1,6 @@
 from app import app
 from flask_login import current_user, login_user
-from app.models import User
+from app.models import User, Post
 from app.forms import LoginForm
 from flask import render_template, flash, redirect, url_for
 from flask_login import logout_user
@@ -13,7 +13,9 @@ from datetime import datetime
 from app.forms import EditProfileForm
 from app.forms import EmptyForm
 from app.forms import PostForm
-from app.models import Post
+
+
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -49,10 +51,10 @@ def explore():
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('index.html', title='Explore', posts=posts)
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
