@@ -17,6 +17,7 @@ from app.forms import PostForm
 
 
 
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
@@ -29,18 +30,18 @@ def index():
         flash('Your post is now live!')
 
         return redirect(url_for('index'))
-
     posts = [
         {
-            'author' : {'username': 'John'},
-            'body' : 'Beautiful day in Portland!'
+            'author': {'username': 'fery'},
+            'body': 'Beautiful day in Portland!'
         },
         {
-            'author' : {'username': 'Susan'},
-            'body' : 'The Avengers movie was so cool!'
+            'author': {'username': 'bank_jago'},
+            'body': 'The Avengers movie was so cool!'
         }
     ]
-    posts = current_user.followed_posts.all()
+
+    posts = current_user.followed_posts().all()
     return render_template("index.html", title='Home Page', form=form,
                             posts=posts)
 
