@@ -41,9 +41,6 @@ def index():
         }
     ]
 
-    # posts = current_user.followed_posts().all()
-    # return render_template("index.html", title='Home Page', form=form,
-    #                         posts=posts)
 
     page = request.args.get('page', 1, type=int)
     posts = current_user.followed_posts().paginate(
