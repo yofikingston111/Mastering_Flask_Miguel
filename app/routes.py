@@ -1,18 +1,16 @@
 from app import app
 from flask_login import current_user, login_user
 from app.models import User, Post
-from app.forms import LoginForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
 from flask import render_template, flash, redirect, url_for
 from flask_login import logout_user
 from flask_login import login_required
 from flask import request
 from werkzeug.urls import url_parse
 from app import db
-from app.forms import RegistrationForm
 from datetime import datetime
-from app.forms import EditProfileForm
 from app.forms import EmptyForm
-from app.forms import PostForm
+
 
 
 
@@ -30,16 +28,6 @@ def index():
         flash('Your post is now live!')
 
         return redirect(url_for('index'))
-    posts = [
-        {
-            'author': {'username': 'fery'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'bank_jago'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
 
 
     page = request.args.get('page', 1, type=int)
@@ -49,7 +37,7 @@ def index():
         if posts.has_next else None
     prev_url = url_for('index', page=posts.prev_num) \
         if posts.has_prev else None
-    return render_template('index.html', title='Home', form=form,
+    return render_template('index.html', title='Home Page', form=form,
                            posts=posts.items, next_url=next_url,
                            prev_url=prev_url)
 
